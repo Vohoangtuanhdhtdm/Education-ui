@@ -13,10 +13,13 @@ interface StreamEndEvent {
 type StreamEventData = LectureChunk | StreamEndEvent;
 
 export const SSE = () => {
+  // --- State Variables (Biến trạng thái) ---
   const [lectureContent, setLectureContent] = useState<LectureChunk[]>([]);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string>("");
-  const eventSourceRef = useRef<EventSource | null>(null);
+
+  // --- Refs (Tham chiếu) ---
+  const eventSourceRef = useRef<EventSource | null>(null); //  EventSource (là đối tượng dùng để kết nối SSE với server)
   const contentEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
@@ -26,35 +29,43 @@ export const SSE = () => {
   useEffect(scrollToBottom, [lectureContent]);
 
   const startGeneration = () => {
+    // 1. Đóng kết nối cũ (nếu có)
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
     }
 
+    // 2. Reset trạng thái
     setLectureContent([]);
     setIsGenerating(true);
     setStatusMessage("Đang kết nối và nhận dữ liệu...");
 
+    // 3. Tạo kết nối EventSource mới
     const newEventSource = new EventSource(
       "http://localhost:3001/api/lecture-stream"
     );
-    eventSourceRef.current = newEventSource;
+    eventSourceRef.current = newEventSource; // Lưu tham chiếu
 
+    // 4. Đăng ký các trình xử lý sự kiện cho EventSource
     newEventSource.onopen = () => {
       console.log("SSE Connection opened!");
       setStatusMessage("Đã kết nối! Đang nhận nội dung bài giảng...");
     };
 
     newEventSource.onmessage = (event) => {
+      // Khi nhận được một tin nhắn từ server
       try {
-        const parsedData: StreamEventData = JSON.parse(event.data);
+        const parsedData: StreamEventData = JSON.parse(event.data); // Dữ liệu từ server là chuỗi JSON, cần parse
 
         if ("type" in parsedData && parsedData.type === "END") {
+          // Kiểm tra có phải tin nhắn KẾT THÚC không
           setStatusMessage(parsedData.message);
           setIsGenerating(false);
-          newEventSource.close();
+          newEventSource.close(); // Đóng kết nối
           eventSourceRef.current = null;
           console.log("SSE Stream ended by server.");
         } else if ("content" in parsedData) {
+          // Nếu là một phần nội dung bài giảng
+          // Cập nhật state lectureContent, Giữ lại các phần cũ, Thêm phần mới vào cuối mảng
           setLectureContent((prevContent) => [
             ...prevContent,
             parsedData as LectureChunk,
@@ -70,6 +81,7 @@ export const SSE = () => {
     };
 
     newEventSource.onerror = (error) => {
+      // Khi có lỗi xảy ra với kết nối
       console.error("EventSource failed:", error);
       setStatusMessage("Lỗi kết nối đến server. Vui lòng thử lại.");
       setIsGenerating(false);
@@ -79,6 +91,8 @@ export const SSE = () => {
   };
 
   useEffect(() => {
+    // Hàm này sẽ được trả về và React sẽ gọi nó khi component bị "unmount" (gỡ bỏ khỏi DOM), mỗi khi component được render lại
+    // Kiểm tra nếu có kết nối SSE đang mở thì đóng nó
     return () => {
       if (eventSourceRef.current) {
         eventSourceRef.current.close();
