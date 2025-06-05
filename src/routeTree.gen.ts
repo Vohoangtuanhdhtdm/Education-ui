@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as TestSSEImport } from './routes/test-SSE'
+import { Route as HomeImport } from './routes/home'
 import { Route as GiaviImport } from './routes/giavi'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
@@ -21,6 +22,12 @@ import { Route as IndexImport } from './routes/index'
 const TestSSERoute = TestSSEImport.update({
   id: '/test-SSE',
   path: '/test-SSE',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const HomeRoute = HomeImport.update({
+  id: '/home',
+  path: '/home',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -67,6 +74,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GiaviImport
       parentRoute: typeof rootRoute
     }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeImport
+      parentRoute: typeof rootRoute
+    }
     '/test-SSE': {
       id: '/test-SSE'
       path: '/test-SSE'
@@ -83,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/giavi': typeof GiaviRoute
+  '/home': typeof HomeRoute
   '/test-SSE': typeof TestSSERoute
 }
 
@@ -90,6 +105,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/giavi': typeof GiaviRoute
+  '/home': typeof HomeRoute
   '/test-SSE': typeof TestSSERoute
 }
 
@@ -98,15 +114,16 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/giavi': typeof GiaviRoute
+  '/home': typeof HomeRoute
   '/test-SSE': typeof TestSSERoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/giavi' | '/test-SSE'
+  fullPaths: '/' | '/about' | '/giavi' | '/home' | '/test-SSE'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/giavi' | '/test-SSE'
-  id: '__root__' | '/' | '/about' | '/giavi' | '/test-SSE'
+  to: '/' | '/about' | '/giavi' | '/home' | '/test-SSE'
+  id: '__root__' | '/' | '/about' | '/giavi' | '/home' | '/test-SSE'
   fileRoutesById: FileRoutesById
 }
 
@@ -114,6 +131,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   GiaviRoute: typeof GiaviRoute
+  HomeRoute: typeof HomeRoute
   TestSSERoute: typeof TestSSERoute
 }
 
@@ -121,6 +139,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   GiaviRoute: GiaviRoute,
+  HomeRoute: HomeRoute,
   TestSSERoute: TestSSERoute,
 }
 
@@ -137,6 +156,7 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/giavi",
+        "/home",
         "/test-SSE"
       ]
     },
@@ -148,6 +168,9 @@ export const routeTree = rootRoute
     },
     "/giavi": {
       "filePath": "giavi.tsx"
+    },
+    "/home": {
+      "filePath": "home.tsx"
     },
     "/test-SSE": {
       "filePath": "test-SSE.tsx"
