@@ -1,5 +1,5 @@
-import { RoleProtectedRoute } from "@/components/module/clerk/RoleProtectedRoute";
-import { ROLES } from "@/type/constants/roles";
+import { Home } from "@/components/module/landing/home/Home";
+
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
@@ -7,12 +7,5 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  return (
-    <div className="p-2">
-      <h3>Welcome Home!</h3>
-      <RoleProtectedRoute allowedRoles={[ROLES.ADMIN]}>
-        <div>Chào admin!</div>
-      </RoleProtectedRoute>
-    </div>
-  );
+  return <Home />;
 }
