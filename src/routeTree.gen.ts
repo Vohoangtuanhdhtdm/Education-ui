@@ -8,15 +8,25 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as TestSSEImport } from './routes/test-SSE'
 import { Route as ManagementToolsImport } from './routes/managementTools'
 import { Route as HomeImport } from './routes/home'
-import { Route as GiaviImport } from './routes/giavi'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
+import { Route as TeacherDashboardImport } from './routes/teacher/dashboard'
+import { Route as TeacherToolsToolsImport } from './routes/teacher/tools/_tools'
+import { Route as TeacherToolsToolsIndexImport } from './routes/teacher/tools/_tools.index'
+import { Route as TeacherToolsToolsCreateQuizImport } from './routes/teacher/tools/_tools.createQuiz'
+import { Route as TeacherToolsToolsCreateLessonImport } from './routes/teacher/tools/_tools.createLesson'
+
+// Create Virtual Routes
+
+const TeacherToolsImport = createFileRoute('/teacher/tools')()
 
 // Create/Update Routes
 
@@ -38,12 +48,6 @@ const HomeRoute = HomeImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const GiaviRoute = GiaviImport.update({
-  id: '/giavi',
-  path: '/giavi',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const AboutRoute = AboutImport.update({
   id: '/about',
   path: '/about',
@@ -55,6 +59,43 @@ const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any)
+
+const TeacherToolsRoute = TeacherToolsImport.update({
+  id: '/teacher/tools',
+  path: '/teacher/tools',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TeacherDashboardRoute = TeacherDashboardImport.update({
+  id: '/teacher/dashboard',
+  path: '/teacher/dashboard',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TeacherToolsToolsRoute = TeacherToolsToolsImport.update({
+  id: '/_tools',
+  getParentRoute: () => TeacherToolsRoute,
+} as any)
+
+const TeacherToolsToolsIndexRoute = TeacherToolsToolsIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TeacherToolsToolsRoute,
+} as any)
+
+const TeacherToolsToolsCreateQuizRoute =
+  TeacherToolsToolsCreateQuizImport.update({
+    id: '/createQuiz',
+    path: '/createQuiz',
+    getParentRoute: () => TeacherToolsToolsRoute,
+  } as any)
+
+const TeacherToolsToolsCreateLessonRoute =
+  TeacherToolsToolsCreateLessonImport.update({
+    id: '/createLesson',
+    path: '/createLesson',
+    getParentRoute: () => TeacherToolsToolsRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -72,13 +113,6 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
-    }
-    '/giavi': {
-      id: '/giavi'
-      path: '/giavi'
-      fullPath: '/giavi'
-      preLoaderRoute: typeof GiaviImport
       parentRoute: typeof rootRoute
     }
     '/home': {
@@ -102,37 +136,118 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TestSSEImport
       parentRoute: typeof rootRoute
     }
+    '/teacher/dashboard': {
+      id: '/teacher/dashboard'
+      path: '/teacher/dashboard'
+      fullPath: '/teacher/dashboard'
+      preLoaderRoute: typeof TeacherDashboardImport
+      parentRoute: typeof rootRoute
+    }
+    '/teacher/tools': {
+      id: '/teacher/tools'
+      path: '/teacher/tools'
+      fullPath: '/teacher/tools'
+      preLoaderRoute: typeof TeacherToolsImport
+      parentRoute: typeof rootRoute
+    }
+    '/teacher/tools/_tools': {
+      id: '/teacher/tools/_tools'
+      path: '/teacher/tools'
+      fullPath: '/teacher/tools'
+      preLoaderRoute: typeof TeacherToolsToolsImport
+      parentRoute: typeof TeacherToolsRoute
+    }
+    '/teacher/tools/_tools/createLesson': {
+      id: '/teacher/tools/_tools/createLesson'
+      path: '/createLesson'
+      fullPath: '/teacher/tools/createLesson'
+      preLoaderRoute: typeof TeacherToolsToolsCreateLessonImport
+      parentRoute: typeof TeacherToolsToolsImport
+    }
+    '/teacher/tools/_tools/createQuiz': {
+      id: '/teacher/tools/_tools/createQuiz'
+      path: '/createQuiz'
+      fullPath: '/teacher/tools/createQuiz'
+      preLoaderRoute: typeof TeacherToolsToolsCreateQuizImport
+      parentRoute: typeof TeacherToolsToolsImport
+    }
+    '/teacher/tools/_tools/': {
+      id: '/teacher/tools/_tools/'
+      path: '/'
+      fullPath: '/teacher/tools/'
+      preLoaderRoute: typeof TeacherToolsToolsIndexImport
+      parentRoute: typeof TeacherToolsToolsImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface TeacherToolsToolsRouteChildren {
+  TeacherToolsToolsCreateLessonRoute: typeof TeacherToolsToolsCreateLessonRoute
+  TeacherToolsToolsCreateQuizRoute: typeof TeacherToolsToolsCreateQuizRoute
+  TeacherToolsToolsIndexRoute: typeof TeacherToolsToolsIndexRoute
+}
+
+const TeacherToolsToolsRouteChildren: TeacherToolsToolsRouteChildren = {
+  TeacherToolsToolsCreateLessonRoute: TeacherToolsToolsCreateLessonRoute,
+  TeacherToolsToolsCreateQuizRoute: TeacherToolsToolsCreateQuizRoute,
+  TeacherToolsToolsIndexRoute: TeacherToolsToolsIndexRoute,
+}
+
+const TeacherToolsToolsRouteWithChildren =
+  TeacherToolsToolsRoute._addFileChildren(TeacherToolsToolsRouteChildren)
+
+interface TeacherToolsRouteChildren {
+  TeacherToolsToolsRoute: typeof TeacherToolsToolsRouteWithChildren
+}
+
+const TeacherToolsRouteChildren: TeacherToolsRouteChildren = {
+  TeacherToolsToolsRoute: TeacherToolsToolsRouteWithChildren,
+}
+
+const TeacherToolsRouteWithChildren = TeacherToolsRoute._addFileChildren(
+  TeacherToolsRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/giavi': typeof GiaviRoute
   '/home': typeof HomeRoute
   '/managementTools': typeof ManagementToolsRoute
   '/test-SSE': typeof TestSSERoute
+  '/teacher/dashboard': typeof TeacherDashboardRoute
+  '/teacher/tools': typeof TeacherToolsToolsRouteWithChildren
+  '/teacher/tools/createLesson': typeof TeacherToolsToolsCreateLessonRoute
+  '/teacher/tools/createQuiz': typeof TeacherToolsToolsCreateQuizRoute
+  '/teacher/tools/': typeof TeacherToolsToolsIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/giavi': typeof GiaviRoute
   '/home': typeof HomeRoute
   '/managementTools': typeof ManagementToolsRoute
   '/test-SSE': typeof TestSSERoute
+  '/teacher/dashboard': typeof TeacherDashboardRoute
+  '/teacher/tools': typeof TeacherToolsToolsIndexRoute
+  '/teacher/tools/createLesson': typeof TeacherToolsToolsCreateLessonRoute
+  '/teacher/tools/createQuiz': typeof TeacherToolsToolsCreateQuizRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/giavi': typeof GiaviRoute
   '/home': typeof HomeRoute
   '/managementTools': typeof ManagementToolsRoute
   '/test-SSE': typeof TestSSERoute
+  '/teacher/dashboard': typeof TeacherDashboardRoute
+  '/teacher/tools': typeof TeacherToolsRouteWithChildren
+  '/teacher/tools/_tools': typeof TeacherToolsToolsRouteWithChildren
+  '/teacher/tools/_tools/createLesson': typeof TeacherToolsToolsCreateLessonRoute
+  '/teacher/tools/_tools/createQuiz': typeof TeacherToolsToolsCreateQuizRoute
+  '/teacher/tools/_tools/': typeof TeacherToolsToolsIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -140,39 +255,59 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/giavi'
     | '/home'
     | '/managementTools'
     | '/test-SSE'
+    | '/teacher/dashboard'
+    | '/teacher/tools'
+    | '/teacher/tools/createLesson'
+    | '/teacher/tools/createQuiz'
+    | '/teacher/tools/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/giavi' | '/home' | '/managementTools' | '/test-SSE'
+  to:
+    | '/'
+    | '/about'
+    | '/home'
+    | '/managementTools'
+    | '/test-SSE'
+    | '/teacher/dashboard'
+    | '/teacher/tools'
+    | '/teacher/tools/createLesson'
+    | '/teacher/tools/createQuiz'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/giavi'
     | '/home'
     | '/managementTools'
     | '/test-SSE'
+    | '/teacher/dashboard'
+    | '/teacher/tools'
+    | '/teacher/tools/_tools'
+    | '/teacher/tools/_tools/createLesson'
+    | '/teacher/tools/_tools/createQuiz'
+    | '/teacher/tools/_tools/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  GiaviRoute: typeof GiaviRoute
   HomeRoute: typeof HomeRoute
   ManagementToolsRoute: typeof ManagementToolsRoute
   TestSSERoute: typeof TestSSERoute
+  TeacherDashboardRoute: typeof TeacherDashboardRoute
+  TeacherToolsRoute: typeof TeacherToolsRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  GiaviRoute: GiaviRoute,
   HomeRoute: HomeRoute,
   ManagementToolsRoute: ManagementToolsRoute,
   TestSSERoute: TestSSERoute,
+  TeacherDashboardRoute: TeacherDashboardRoute,
+  TeacherToolsRoute: TeacherToolsRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -187,10 +322,11 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
-        "/giavi",
         "/home",
         "/managementTools",
-        "/test-SSE"
+        "/test-SSE",
+        "/teacher/dashboard",
+        "/teacher/tools"
       ]
     },
     "/": {
@@ -198,9 +334,6 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.tsx"
-    },
-    "/giavi": {
-      "filePath": "giavi.tsx"
     },
     "/home": {
       "filePath": "home.tsx"
@@ -210,6 +343,36 @@ export const routeTree = rootRoute
     },
     "/test-SSE": {
       "filePath": "test-SSE.tsx"
+    },
+    "/teacher/dashboard": {
+      "filePath": "teacher/dashboard.tsx"
+    },
+    "/teacher/tools": {
+      "filePath": "teacher/tools",
+      "children": [
+        "/teacher/tools/_tools"
+      ]
+    },
+    "/teacher/tools/_tools": {
+      "filePath": "teacher/tools/_tools.tsx",
+      "parent": "/teacher/tools",
+      "children": [
+        "/teacher/tools/_tools/createLesson",
+        "/teacher/tools/_tools/createQuiz",
+        "/teacher/tools/_tools/"
+      ]
+    },
+    "/teacher/tools/_tools/createLesson": {
+      "filePath": "teacher/tools/_tools.createLesson.tsx",
+      "parent": "/teacher/tools/_tools"
+    },
+    "/teacher/tools/_tools/createQuiz": {
+      "filePath": "teacher/tools/_tools.createQuiz.tsx",
+      "parent": "/teacher/tools/_tools"
+    },
+    "/teacher/tools/_tools/": {
+      "filePath": "teacher/tools/_tools.index.tsx",
+      "parent": "/teacher/tools/_tools"
     }
   }
 }

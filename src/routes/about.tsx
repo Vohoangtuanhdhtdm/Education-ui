@@ -1,4 +1,3 @@
-import { TestCarousel } from "@/components/module/TestCarousel";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/about")({
@@ -8,7 +7,7 @@ export const Route = createFileRoute("/about")({
 function RouteComponent() {
   return (
     <div className="p-2">
-      <TestCarousel />
+      <h1>about</h1>
     </div>
   );
 }

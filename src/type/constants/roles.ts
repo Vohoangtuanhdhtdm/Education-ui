@@ -1,6 +1,7 @@
 export const ROLES = {
   ADMIN: "admin",
-  EDITOR: "editor",
+  STUDENT: "student",
+  TEACHER: "teacher",
   VIEWER: "viewer",
 } as const; // `as const` để có type checking chặt chẽ hơn
 
