@@ -34,7 +34,7 @@ export const RootLayout = () => {
                   className="px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                   activeProps={{ className: "text-indigo-600 bg-indigo-50" }}
                 >
-                  About
+                  Test SSE
                 </Link>
                 {hasRole(ROLES.TEACHER) && (
                   <Link

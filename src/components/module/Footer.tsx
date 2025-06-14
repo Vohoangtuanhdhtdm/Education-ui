@@ -1,5 +1,3 @@
-import React from "react";
-
 function Footer() {
   return (
     <footer className="bg-gradient-to-r from-blue-900 to-teal-600 text-white py-8">

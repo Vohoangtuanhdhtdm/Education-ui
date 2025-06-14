@@ -14,6 +14,7 @@ export interface Tool {
   description: string;
   bgColor: string;
   icon: ElementType;
+  link?: string; // Optional link for navigation
 }
 
 export const toolsData: Tool[] = [
@@ -25,6 +26,7 @@ export const toolsData: Tool[] = [
       "Design structured lesson plans tailored to your curriculum, ensuring alignment with educational goals.",
     bgColor: "bg-pink-100",
     icon: BookMarked,
+    link: "/teacher/tools/createLesson",
   },
   {
     id: 2,
