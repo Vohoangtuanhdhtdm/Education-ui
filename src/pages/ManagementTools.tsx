@@ -19,7 +19,7 @@ export function ManagementTools() {
   return (
     <div className="py-16 px-4 min-h-screen">
       <h2 className="text-3xl md:text-4xl font-bold text-blue-700 text-center mb-12">
-        Course Management Tools
+        Công Cụ AI Hỗ Trợ Giáo Viên
       </h2>
       <ToolSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
       <CategoryFilters

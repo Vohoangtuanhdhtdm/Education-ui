@@ -1,112 +1,50 @@
-import React, { useState, useEffect, useRef } from "react";
-interface LectureChunk {
-  id: number;
-  content: string;
-  part: number;
-  totalParts: number;
-}
-
-interface StreamEndEvent {
-  type: "END";
-  message: string;
-}
-type StreamEventData = LectureChunk | StreamEndEvent;
+import { useLectureStream } from "@/hooks/useLectureStream";
+import type { LectureChunk } from "@/type/lecture/lecture";
+import { useRef, useEffect } from "react";
+import toast from "react-hot-toast";
 
 export const SSE = () => {
-  // --- State Variables (Biến trạng thái) ---
-  const [lectureContent, setLectureContent] = useState<LectureChunk[]>([]);
-  const [isGenerating, setIsGenerating] = useState<boolean>(false);
-  const [statusMessage, setStatusMessage] = useState<string>("");
+  // --- Gọi Hook để lấy state và hàm điều khiển ---
+  const { lectureContent, status, statusMessage, startGeneration } =
+    useLectureStream("http://localhost:3001/api/lecture-stream");
 
-  // --- Refs (Tham chiếu) ---
-  const eventSourceRef = useRef<EventSource | null>(null); //  EventSource (là đối tượng dùng để kết nối SSE với server)
+  const isGenerating = status === "connecting" || status === "streaming";
+  const isContentAvailable = lectureContent.length > 0;
+  const isStreamFinished = status === "success" || status === "error";
+
+  // --- Logic cho việc cuộn trang ---
   const contentEndRef = useRef<HTMLDivElement | null>(null);
-
   const scrollToBottom = () => {
     contentEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
+  // Cuộn xuống mỗi khi nội dung bài giảng thay đổi
   useEffect(scrollToBottom, [lectureContent]);
 
-  const startGeneration = () => {
-    // 1. Đóng kết nối cũ (nếu có)
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
+  const handleCopyAll = async () => {
+    const allContent = lectureContent
+      .map((chunk) => `${chunk.content}`) // Chỉ lấy nội dung, không kèm "Phần X/Y"
+      .join("\n\n"); // Nối các phần bằng hai dòng trống cho dễ đọc
+
+    if (allContent.trim().length === 0) {
+      toast.error("Không có nội dung để sao chép!");
+      return;
     }
+    try {
+      await navigator.clipboard.writeText(allContent);
 
-    // 2. Reset trạng thái
-    setLectureContent([]);
-    setIsGenerating(true);
-    setStatusMessage("Đang kết nối và nhận dữ liệu...");
-
-    // 3. Tạo kết nối EventSource mới
-    const newEventSource = new EventSource(
-      "http://localhost:3001/api/lecture-stream"
-    );
-    eventSourceRef.current = newEventSource; // Lưu tham chiếu
-
-    // 4. Đăng ký các trình xử lý sự kiện cho EventSource
-    newEventSource.onopen = () => {
-      console.log("SSE Connection opened!");
-      setStatusMessage("Đã kết nối! Đang nhận nội dung bài giảng...");
-    };
-
-    newEventSource.onmessage = (event) => {
-      // Khi nhận được một tin nhắn từ server
-      try {
-        const parsedData: StreamEventData = JSON.parse(event.data); // Dữ liệu từ server là chuỗi JSON, cần parse
-
-        if ("type" in parsedData && parsedData.type === "END") {
-          // Kiểm tra có phải tin nhắn KẾT THÚC không
-          setStatusMessage(parsedData.message);
-          setIsGenerating(false);
-          newEventSource.close(); // Đóng kết nối
-          eventSourceRef.current = null;
-          console.log("SSE Stream ended by server.");
-        } else if ("content" in parsedData) {
-          // Nếu là một phần nội dung bài giảng
-          // Cập nhật state lectureContent, Giữ lại các phần cũ, Thêm phần mới vào cuối mảng
-          setLectureContent((prevContent) => [
-            ...prevContent,
-            parsedData as LectureChunk,
-          ]);
-          setStatusMessage(
-            `Đang nhận phần ${parsedData.part}/${parsedData.totalParts}...`
-          );
-        }
-      } catch (error) {
-        console.error("Error parsing SSE data:", error);
-        setStatusMessage("Lỗi xử lý dữ liệu từ server.");
-      }
-    };
-
-    newEventSource.onerror = (error) => {
-      // Khi có lỗi xảy ra với kết nối
-      console.error("EventSource failed:", error);
-      setStatusMessage("Lỗi kết nối đến server. Vui lòng thử lại.");
-      setIsGenerating(false);
-      newEventSource.close();
-      eventSourceRef.current = null;
-    };
+      toast.success("Đã sao chép tất cả nội dung!");
+    } catch (err) {
+      console.error("Failed to copy text:", err);
+      toast.error("Không thể sao chép. Vui lòng thử lại.");
+    }
   };
 
-  useEffect(() => {
-    // Hàm này sẽ được trả về và React sẽ gọi nó khi component bị "unmount" (gỡ bỏ khỏi DOM), mỗi khi component được render lại
-    // Kiểm tra nếu có kết nối SSE đang mở thì đóng nó
-    return () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-        console.log("SSE Connection closed on component unmount.");
-      }
-    };
-  }, []);
-
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-800 font-sans flex flex-col items-center">
+    <div className="min-h-screen bg-gray-100 text-gray-800 font-sans flex flex-col items-center pb-10">
       <header className="w-full bg-gray-800 p-6 shadow-md">
         <div className="container mx-auto text-center">
           <h1 className="text-3xl font-bold text-sky-400 mb-4">
-            AI Tạo Nội Dung Bài Giảng (Demo Tailwind)
+            AI Tạo Nội Dung Bài Giảng
           </h1>
           <button
             onClick={startGeneration}
@@ -123,28 +61,56 @@ export const SSE = () => {
           >
             {isGenerating ? "Đang Tạo..." : "Bắt Đầu Tạo Bài Giảng"}
           </button>
-          <p className="text-sm italic text-gray-400 mt-3 min-h-[20px]">
+          <p
+            className={`text-sm italic mt-3 min-h-[20px] ${
+              status === "error" ? "text-red-500 font-medium" : "text-gray-400"
+            }`}
+          >
             {statusMessage}
           </p>
         </div>
       </header>
-
       <main className="container mx-auto p-4 md:p-6 w-full max-w-3xl mt-5">
-        <div className="bg-white shadow-xl rounded-lg p-6 min-h-[300px] max-h-[60vh] overflow-y-auto">
+        <div className="bg-white shadow-xl rounded-lg p-6 min-h-[400px] max-h-[60vh] overflow-y-auto relative">
           <h2 className="text-2xl font-semibold text-gray-700 mb-6 border-b pb-3">
             Nội dung bài giảng:
           </h2>
+          {isContentAvailable && isStreamFinished && (
+            <div className="absolute top-4 right-4 z-10 flex flex-col items-end">
+              <button
+                onClick={handleCopyAll}
+                className="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-md shadow-md transition-colors duration-150 ease-in-out flex items-center"
+                title="Sao chép toàn bộ nội dung"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 mr-2"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                  <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+                </svg>
+                Sao chép
+              </button>
+            </div>
+          )}
           {lectureContent.length === 0 && !isGenerating && (
             <p className="text-gray-500">Nhấn nút để bắt đầu tạo nội dung.</p>
           )}
+          {lectureContent.length === 0 && isGenerating && (
+            <p className="text-gray-500">
+              Đang chờ nội dung đầu tiên từ server...
+            </p>
+          )}
           <div className="space-y-4">
-            {lectureContent.map((chunk) => (
+            {lectureContent.map((chunk: LectureChunk) => (
               <div
                 key={chunk.id}
-                className="bg-sky-50 border-l-4 border-sky-500 p-4 rounded-r-md shadow animate-fadeIn"
+                className="bg-white border border-sky-200 p-5 rounded-lg shadow-sm animate-fadeIn text-gray-800 break-words" // Thay đổi styling
               >
-                <p className="text-gray-700 leading-relaxed">
-                  <strong className="text-sky-700">
+                <p className="leading-relaxed text-base">
+                  <strong className="text-sky-700 font-semibold text-lg">
                     Phần {chunk.part}/{chunk.totalParts}:
                   </strong>{" "}
                   {chunk.content}
@@ -152,15 +118,9 @@ export const SSE = () => {
               </div>
             ))}
           </div>
-          <div ref={contentEndRef} /> {/* Div trống để scroll tới */}
+          <div ref={contentEndRef} />
         </div>
       </main>
-
-      <footer className="w-full text-center p-4 mt-auto">
-        <p className="text-sm text-gray-500">
-          Demo sử dụng React, TypeScript, Express.js & Tailwind CSS
-        </p>
-      </footer>
     </div>
   );
 };

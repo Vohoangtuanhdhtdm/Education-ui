@@ -7,9 +7,6 @@ export const Route = createFileRoute("/teacher/tools/_tools")({
 function RouteComponent() {
   return (
     <div>
-      <h2>Tools</h2>
-      {/* Navigation buttons */}
-
       <Outlet />
     </div>
   );
