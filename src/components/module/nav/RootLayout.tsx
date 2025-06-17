@@ -36,9 +36,16 @@ export const RootLayout = () => {
                 >
                   Test SSE
                 </Link>
+                <Link
+                  to="/dashboard"
+                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+                  activeProps={{ className: "text-indigo-600 bg-indigo-50" }}
+                >
+                  Test Route
+                </Link>
                 {hasRole(ROLES.TEACHER) && (
                   <Link
-                    to="/teacher/dashboard"
+                    to="/teacher"
                     className="px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                     activeProps={{ className: "text-indigo-600 bg-indigo-50" }}
                   >
