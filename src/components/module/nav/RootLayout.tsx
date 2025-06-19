@@ -8,9 +8,26 @@ import { Link, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { ROLES } from "@/type/constants/roles";
 import { useAuthorization } from "@/hooks/useAuthorization";
+import { useEffect, useState } from "react";
+import { RoleSelectionModal } from "../modal/RoleSelectionModal";
 
 export const RootLayout = () => {
-  const { hasRole } = useAuthorization();
+  const { hasRole, userRoles } = useAuthorization();
+  const [showRoleModal, setShowRoleModal] = useState(false);
+  const handleRoleSubmit = async (role: "student" | "teacher") => {
+    try {
+      console.log("Đã cập nhật vai trò:", role);
+    } catch (error) {
+      console.error("Lỗi khi cập nhật vai trò Clerk metadata:", error);
+      throw error;
+    }
+  };
+  useEffect(() => {
+    if (userRoles.length == 0) {
+      // Chưa có vai trò nào được gán
+      setShowRoleModal(true);
+    }
+  }, []);
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <header className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
@@ -36,13 +53,7 @@ export const RootLayout = () => {
                 >
                   Test SSE
                 </Link>
-                <Link
-                  to="/dashboard"
-                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
-                  activeProps={{ className: "text-indigo-600 bg-indigo-50" }}
-                >
-                  Test Route
-                </Link>
+
                 {hasRole(ROLES.TEACHER) && (
                   <Link
                     to="/teacher"
@@ -71,14 +82,18 @@ export const RootLayout = () => {
           </div>
         </nav>
       </header>
-
       {/* Vùng nội dung chính của trang */}
       <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Outlet />
       </main>
-
       {/* Devtools chỉ hiển thị khi phát triển */}
       <TanStackRouterDevtools position="bottom-right" />
+      <RoleSelectionModal
+        isOpen={showRoleModal}
+        onClose={() => setShowRoleModal(false)}
+        onSubmitRole={handleRoleSubmit}
+      />
+      ;
     </div>
   );
 };

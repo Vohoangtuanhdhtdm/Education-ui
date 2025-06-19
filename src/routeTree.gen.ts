@@ -14,6 +14,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as TestSSEImport } from './routes/test-SSE'
+import { Route as TestImport } from './routes/test'
 import { Route as HomeImport } from './routes/home'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
@@ -40,6 +41,12 @@ const TeacherRoute = TeacherImport.update({
 const TestSSERoute = TestSSEImport.update({
   id: '/test-SSE',
   path: '/test-SSE',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TestRoute = TestImport.update({
+  id: '/test',
+  path: '/test',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -128,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof HomeImport
+      parentRoute: typeof rootRoute
+    }
+    '/test': {
+      id: '/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof TestImport
       parentRoute: typeof rootRoute
     }
     '/test-SSE': {
@@ -250,6 +264,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/home': typeof HomeRoute
+  '/test': typeof TestRoute
   '/test-SSE': typeof TestSSERoute
   '/teacher': typeof TeacherTeacherRouteWithChildren
   '/teacher/class': typeof TeacherTeacherClassRoute
@@ -264,6 +279,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/home': typeof HomeRoute
+  '/test': typeof TestRoute
   '/test-SSE': typeof TestSSERoute
   '/teacher': typeof TeacherTeacherIndexRoute
   '/teacher/class': typeof TeacherTeacherClassRoute
@@ -277,6 +293,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/home': typeof HomeRoute
+  '/test': typeof TestRoute
   '/test-SSE': typeof TestSSERoute
   '/teacher': typeof TeacherRouteWithChildren
   '/teacher/_teacher': typeof TeacherTeacherRouteWithChildren
@@ -294,6 +311,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/home'
+    | '/test'
     | '/test-SSE'
     | '/teacher'
     | '/teacher/class'
@@ -307,6 +325,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/home'
+    | '/test'
     | '/test-SSE'
     | '/teacher'
     | '/teacher/class'
@@ -318,6 +337,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/home'
+    | '/test'
     | '/test-SSE'
     | '/teacher'
     | '/teacher/_teacher'
@@ -334,6 +354,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   HomeRoute: typeof HomeRoute
+  TestRoute: typeof TestRoute
   TestSSERoute: typeof TestSSERoute
   TeacherRoute: typeof TeacherRouteWithChildren
 }
@@ -342,6 +363,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   HomeRoute: HomeRoute,
+  TestRoute: TestRoute,
   TestSSERoute: TestSSERoute,
   TeacherRoute: TeacherRouteWithChildren,
 }
@@ -359,6 +381,7 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/home",
+        "/test",
         "/test-SSE",
         "/teacher"
       ]
@@ -371,6 +394,9 @@ export const routeTree = rootRoute
     },
     "/home": {
       "filePath": "home.tsx"
+    },
+    "/test": {
+      "filePath": "test.tsx"
     },
     "/test-SSE": {
       "filePath": "test-SSE.tsx"
