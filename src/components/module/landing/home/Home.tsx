@@ -8,8 +8,10 @@ import {
 } from "@heroicons/react/24/outline";
 import { FeatureCard } from "./FeatureCard"; // Giả sử FeatureCard ở cùng thư mục
 import { EducationForAllSection } from "./EducationForAllSection";
+import { useUser } from "@clerk/clerk-react";
 
 export const Home = () => {
+  const { user } = useUser();
   const features = [
     {
       icon: <UserCircleIcon />,
@@ -33,6 +35,7 @@ export const Home = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <h1>{JSON.stringify(user?.publicMetadata)}</h1>
       {/*Hero Section */}
       <div className="flex flex-col items-center justify-start py-12 px-4 text-gray-800">
         <div className="relative mb-16 mt-8">
