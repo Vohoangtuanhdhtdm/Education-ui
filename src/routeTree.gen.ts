@@ -10,207 +10,280 @@
 
 import { createFileRoute } from '@tanstack/react-router'
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as TestSSERouteImport } from './routes/test-SSE'
+import { Route as TestRouteImport } from './routes/test'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as TeacherTeacherRouteImport } from './routes/teacher/_teacher'
+import { Route as TeacherTeacherIndexRouteImport } from './routes/teacher/_teacher.index'
+import { Route as TeacherTeacherStudentRouteImport } from './routes/teacher/_teacher.student'
+import { Route as TeacherTeacherClassRouteImport } from './routes/teacher/_teacher.class'
+import { Route as TeacherTeacherToolsTeacherToolsRouteImport } from './routes/teacher/_teacher.tools/_teacher.tools'
+import { Route as TeacherTeacherToolsTeacherToolsIndexRouteImport } from './routes/teacher/_teacher.tools/_teacher.tools.index'
+import { Route as TeacherTeacherToolsTeacherToolsCreateLessonRouteImport } from './routes/teacher/_teacher.tools/_teacher.tools.createLesson'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as TestSSEImport } from './routes/test-SSE'
-import { Route as TestImport } from './routes/test'
-import { Route as HomeImport } from './routes/home'
-import { Route as AboutImport } from './routes/about'
-import { Route as IndexImport } from './routes/index'
-import { Route as TeacherTeacherImport } from './routes/teacher/_teacher'
-import { Route as TeacherTeacherIndexImport } from './routes/teacher/_teacher.index'
-import { Route as TeacherTeacherStudentImport } from './routes/teacher/_teacher.student'
-import { Route as TeacherTeacherClassImport } from './routes/teacher/_teacher.class'
-import { Route as TeacherTeacherToolsTeacherToolsImport } from './routes/teacher/_teacher.tools/_teacher.tools'
-import { Route as TeacherTeacherToolsTeacherToolsIndexImport } from './routes/teacher/_teacher.tools/_teacher.tools.index'
-import { Route as TeacherTeacherToolsTeacherToolsCreateLessonImport } from './routes/teacher/_teacher.tools/_teacher.tools.createLesson'
+const TeacherRouteImport = createFileRoute('/teacher')()
 
-// Create Virtual Routes
-
-const TeacherImport = createFileRoute('/teacher')()
-
-// Create/Update Routes
-
-const TeacherRoute = TeacherImport.update({
+const TeacherRoute = TeacherRouteImport.update({
   id: '/teacher',
   path: '/teacher',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const TestSSERoute = TestSSEImport.update({
+const TestSSERoute = TestSSERouteImport.update({
   id: '/test-SSE',
   path: '/test-SSE',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const TestRoute = TestImport.update({
+const TestRoute = TestRouteImport.update({
   id: '/test',
   path: '/test',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const HomeRoute = HomeImport.update({
+const HomeRoute = HomeRouteImport.update({
   id: '/home',
   path: '/home',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AboutRoute = AboutImport.update({
+const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const TeacherTeacherRoute = TeacherTeacherImport.update({
+const TeacherTeacherRoute = TeacherTeacherRouteImport.update({
   id: '/_teacher',
   getParentRoute: () => TeacherRoute,
 } as any)
-
-const TeacherTeacherIndexRoute = TeacherTeacherIndexImport.update({
+const TeacherTeacherIndexRoute = TeacherTeacherIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => TeacherTeacherRoute,
 } as any)
-
-const TeacherTeacherStudentRoute = TeacherTeacherStudentImport.update({
+const TeacherTeacherStudentRoute = TeacherTeacherStudentRouteImport.update({
   id: '/student',
   path: '/student',
   getParentRoute: () => TeacherTeacherRoute,
 } as any)
-
-const TeacherTeacherClassRoute = TeacherTeacherClassImport.update({
+const TeacherTeacherClassRoute = TeacherTeacherClassRouteImport.update({
   id: '/class',
   path: '/class',
   getParentRoute: () => TeacherTeacherRoute,
 } as any)
-
 const TeacherTeacherToolsTeacherToolsRoute =
-  TeacherTeacherToolsTeacherToolsImport.update({
+  TeacherTeacherToolsTeacherToolsRouteImport.update({
     id: '/tools/_teacher/tools',
     path: '/tools/tools',
     getParentRoute: () => TeacherTeacherRoute,
   } as any)
-
 const TeacherTeacherToolsTeacherToolsIndexRoute =
-  TeacherTeacherToolsTeacherToolsIndexImport.update({
+  TeacherTeacherToolsTeacherToolsIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => TeacherTeacherToolsTeacherToolsRoute,
   } as any)
-
 const TeacherTeacherToolsTeacherToolsCreateLessonRoute =
-  TeacherTeacherToolsTeacherToolsCreateLessonImport.update({
+  TeacherTeacherToolsTeacherToolsCreateLessonRouteImport.update({
     id: '/createLesson',
     path: '/createLesson',
     getParentRoute: () => TeacherTeacherToolsTeacherToolsRoute,
   } as any)
 
-// Populate the FileRoutesByPath interface
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/home': typeof HomeRoute
+  '/test': typeof TestRoute
+  '/test-SSE': typeof TestSSERoute
+  '/teacher': typeof TeacherTeacherRouteWithChildren
+  '/teacher/class': typeof TeacherTeacherClassRoute
+  '/teacher/student': typeof TeacherTeacherStudentRoute
+  '/teacher/': typeof TeacherTeacherIndexRoute
+  '/teacher/tools/tools': typeof TeacherTeacherToolsTeacherToolsRouteWithChildren
+  '/teacher/tools/tools/createLesson': typeof TeacherTeacherToolsTeacherToolsCreateLessonRoute
+  '/teacher/tools/tools/': typeof TeacherTeacherToolsTeacherToolsIndexRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/home': typeof HomeRoute
+  '/test': typeof TestRoute
+  '/test-SSE': typeof TestSSERoute
+  '/teacher': typeof TeacherTeacherIndexRoute
+  '/teacher/class': typeof TeacherTeacherClassRoute
+  '/teacher/student': typeof TeacherTeacherStudentRoute
+  '/teacher/tools/tools/createLesson': typeof TeacherTeacherToolsTeacherToolsCreateLessonRoute
+  '/teacher/tools/tools': typeof TeacherTeacherToolsTeacherToolsIndexRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/home': typeof HomeRoute
+  '/test': typeof TestRoute
+  '/test-SSE': typeof TestSSERoute
+  '/teacher': typeof TeacherRouteWithChildren
+  '/teacher/_teacher': typeof TeacherTeacherRouteWithChildren
+  '/teacher/_teacher/class': typeof TeacherTeacherClassRoute
+  '/teacher/_teacher/student': typeof TeacherTeacherStudentRoute
+  '/teacher/_teacher/': typeof TeacherTeacherIndexRoute
+  '/teacher/_teacher/tools/_teacher/tools': typeof TeacherTeacherToolsTeacherToolsRouteWithChildren
+  '/teacher/_teacher/tools/_teacher/tools/createLesson': typeof TeacherTeacherToolsTeacherToolsCreateLessonRoute
+  '/teacher/_teacher/tools/_teacher/tools/': typeof TeacherTeacherToolsTeacherToolsIndexRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/home'
+    | '/test'
+    | '/test-SSE'
+    | '/teacher'
+    | '/teacher/class'
+    | '/teacher/student'
+    | '/teacher/'
+    | '/teacher/tools/tools'
+    | '/teacher/tools/tools/createLesson'
+    | '/teacher/tools/tools/'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/about'
+    | '/home'
+    | '/test'
+    | '/test-SSE'
+    | '/teacher'
+    | '/teacher/class'
+    | '/teacher/student'
+    | '/teacher/tools/tools/createLesson'
+    | '/teacher/tools/tools'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/home'
+    | '/test'
+    | '/test-SSE'
+    | '/teacher'
+    | '/teacher/_teacher'
+    | '/teacher/_teacher/class'
+    | '/teacher/_teacher/student'
+    | '/teacher/_teacher/'
+    | '/teacher/_teacher/tools/_teacher/tools'
+    | '/teacher/_teacher/tools/_teacher/tools/createLesson'
+    | '/teacher/_teacher/tools/_teacher/tools/'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  HomeRoute: typeof HomeRoute
+  TestRoute: typeof TestRoute
+  TestSSERoute: typeof TestSSERoute
+  TeacherRoute: typeof TeacherRouteWithChildren
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
-    }
-    '/home': {
-      id: '/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof HomeImport
-      parentRoute: typeof rootRoute
-    }
-    '/test': {
-      id: '/test'
-      path: '/test'
-      fullPath: '/test'
-      preLoaderRoute: typeof TestImport
-      parentRoute: typeof rootRoute
+    '/teacher': {
+      id: '/teacher'
+      path: '/teacher'
+      fullPath: '/teacher'
+      preLoaderRoute: typeof TeacherRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/test-SSE': {
       id: '/test-SSE'
       path: '/test-SSE'
       fullPath: '/test-SSE'
-      preLoaderRoute: typeof TestSSEImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof TestSSERouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/teacher': {
-      id: '/teacher'
-      path: '/teacher'
-      fullPath: '/teacher'
-      preLoaderRoute: typeof TeacherImport
-      parentRoute: typeof rootRoute
+    '/test': {
+      id: '/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof TestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/teacher/_teacher': {
       id: '/teacher/_teacher'
       path: '/teacher'
       fullPath: '/teacher'
-      preLoaderRoute: typeof TeacherTeacherImport
+      preLoaderRoute: typeof TeacherTeacherRouteImport
       parentRoute: typeof TeacherRoute
-    }
-    '/teacher/_teacher/class': {
-      id: '/teacher/_teacher/class'
-      path: '/class'
-      fullPath: '/teacher/class'
-      preLoaderRoute: typeof TeacherTeacherClassImport
-      parentRoute: typeof TeacherTeacherImport
-    }
-    '/teacher/_teacher/student': {
-      id: '/teacher/_teacher/student'
-      path: '/student'
-      fullPath: '/teacher/student'
-      preLoaderRoute: typeof TeacherTeacherStudentImport
-      parentRoute: typeof TeacherTeacherImport
     }
     '/teacher/_teacher/': {
       id: '/teacher/_teacher/'
       path: '/'
       fullPath: '/teacher/'
-      preLoaderRoute: typeof TeacherTeacherIndexImport
-      parentRoute: typeof TeacherTeacherImport
+      preLoaderRoute: typeof TeacherTeacherIndexRouteImport
+      parentRoute: typeof TeacherTeacherRoute
+    }
+    '/teacher/_teacher/student': {
+      id: '/teacher/_teacher/student'
+      path: '/student'
+      fullPath: '/teacher/student'
+      preLoaderRoute: typeof TeacherTeacherStudentRouteImport
+      parentRoute: typeof TeacherTeacherRoute
+    }
+    '/teacher/_teacher/class': {
+      id: '/teacher/_teacher/class'
+      path: '/class'
+      fullPath: '/teacher/class'
+      preLoaderRoute: typeof TeacherTeacherClassRouteImport
+      parentRoute: typeof TeacherTeacherRoute
     }
     '/teacher/_teacher/tools/_teacher/tools': {
       id: '/teacher/_teacher/tools/_teacher/tools'
       path: '/tools/tools'
       fullPath: '/teacher/tools/tools'
-      preLoaderRoute: typeof TeacherTeacherToolsTeacherToolsImport
-      parentRoute: typeof TeacherTeacherImport
-    }
-    '/teacher/_teacher/tools/_teacher/tools/createLesson': {
-      id: '/teacher/_teacher/tools/_teacher/tools/createLesson'
-      path: '/createLesson'
-      fullPath: '/teacher/tools/tools/createLesson'
-      preLoaderRoute: typeof TeacherTeacherToolsTeacherToolsCreateLessonImport
-      parentRoute: typeof TeacherTeacherToolsTeacherToolsImport
+      preLoaderRoute: typeof TeacherTeacherToolsTeacherToolsRouteImport
+      parentRoute: typeof TeacherTeacherRoute
     }
     '/teacher/_teacher/tools/_teacher/tools/': {
       id: '/teacher/_teacher/tools/_teacher/tools/'
       path: '/'
       fullPath: '/teacher/tools/tools/'
-      preLoaderRoute: typeof TeacherTeacherToolsTeacherToolsIndexImport
-      parentRoute: typeof TeacherTeacherToolsTeacherToolsImport
+      preLoaderRoute: typeof TeacherTeacherToolsTeacherToolsIndexRouteImport
+      parentRoute: typeof TeacherTeacherToolsTeacherToolsRoute
+    }
+    '/teacher/_teacher/tools/_teacher/tools/createLesson': {
+      id: '/teacher/_teacher/tools/_teacher/tools/createLesson'
+      path: '/createLesson'
+      fullPath: '/teacher/tools/tools/createLesson'
+      preLoaderRoute: typeof TeacherTeacherToolsTeacherToolsCreateLessonRouteImport
+      parentRoute: typeof TeacherTeacherToolsTeacherToolsRoute
     }
   }
 }
-
-// Create and export the route tree
 
 interface TeacherTeacherToolsTeacherToolsRouteChildren {
   TeacherTeacherToolsTeacherToolsCreateLessonRoute: typeof TeacherTeacherToolsTeacherToolsCreateLessonRoute
@@ -260,105 +333,6 @@ const TeacherRouteChildren: TeacherRouteChildren = {
 const TeacherRouteWithChildren =
   TeacherRoute._addFileChildren(TeacherRouteChildren)
 
-export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/home': typeof HomeRoute
-  '/test': typeof TestRoute
-  '/test-SSE': typeof TestSSERoute
-  '/teacher': typeof TeacherTeacherRouteWithChildren
-  '/teacher/class': typeof TeacherTeacherClassRoute
-  '/teacher/student': typeof TeacherTeacherStudentRoute
-  '/teacher/': typeof TeacherTeacherIndexRoute
-  '/teacher/tools/tools': typeof TeacherTeacherToolsTeacherToolsRouteWithChildren
-  '/teacher/tools/tools/createLesson': typeof TeacherTeacherToolsTeacherToolsCreateLessonRoute
-  '/teacher/tools/tools/': typeof TeacherTeacherToolsTeacherToolsIndexRoute
-}
-
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/home': typeof HomeRoute
-  '/test': typeof TestRoute
-  '/test-SSE': typeof TestSSERoute
-  '/teacher': typeof TeacherTeacherIndexRoute
-  '/teacher/class': typeof TeacherTeacherClassRoute
-  '/teacher/student': typeof TeacherTeacherStudentRoute
-  '/teacher/tools/tools/createLesson': typeof TeacherTeacherToolsTeacherToolsCreateLessonRoute
-  '/teacher/tools/tools': typeof TeacherTeacherToolsTeacherToolsIndexRoute
-}
-
-export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/home': typeof HomeRoute
-  '/test': typeof TestRoute
-  '/test-SSE': typeof TestSSERoute
-  '/teacher': typeof TeacherRouteWithChildren
-  '/teacher/_teacher': typeof TeacherTeacherRouteWithChildren
-  '/teacher/_teacher/class': typeof TeacherTeacherClassRoute
-  '/teacher/_teacher/student': typeof TeacherTeacherStudentRoute
-  '/teacher/_teacher/': typeof TeacherTeacherIndexRoute
-  '/teacher/_teacher/tools/_teacher/tools': typeof TeacherTeacherToolsTeacherToolsRouteWithChildren
-  '/teacher/_teacher/tools/_teacher/tools/createLesson': typeof TeacherTeacherToolsTeacherToolsCreateLessonRoute
-  '/teacher/_teacher/tools/_teacher/tools/': typeof TeacherTeacherToolsTeacherToolsIndexRoute
-}
-
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/about'
-    | '/home'
-    | '/test'
-    | '/test-SSE'
-    | '/teacher'
-    | '/teacher/class'
-    | '/teacher/student'
-    | '/teacher/'
-    | '/teacher/tools/tools'
-    | '/teacher/tools/tools/createLesson'
-    | '/teacher/tools/tools/'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/about'
-    | '/home'
-    | '/test'
-    | '/test-SSE'
-    | '/teacher'
-    | '/teacher/class'
-    | '/teacher/student'
-    | '/teacher/tools/tools/createLesson'
-    | '/teacher/tools/tools'
-  id:
-    | '__root__'
-    | '/'
-    | '/about'
-    | '/home'
-    | '/test'
-    | '/test-SSE'
-    | '/teacher'
-    | '/teacher/_teacher'
-    | '/teacher/_teacher/class'
-    | '/teacher/_teacher/student'
-    | '/teacher/_teacher/'
-    | '/teacher/_teacher/tools/_teacher/tools'
-    | '/teacher/_teacher/tools/_teacher/tools/createLesson'
-    | '/teacher/_teacher/tools/_teacher/tools/'
-  fileRoutesById: FileRoutesById
-}
-
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
-  HomeRoute: typeof HomeRoute
-  TestRoute: typeof TestRoute
-  TestSSERoute: typeof TestSSERoute
-  TeacherRoute: typeof TeacherRouteWithChildren
-}
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -367,84 +341,6 @@ const rootRouteChildren: RootRouteChildren = {
   TestSSERoute: TestSSERoute,
   TeacherRoute: TeacherRouteWithChildren,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/about",
-        "/home",
-        "/test",
-        "/test-SSE",
-        "/teacher"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/about": {
-      "filePath": "about.tsx"
-    },
-    "/home": {
-      "filePath": "home.tsx"
-    },
-    "/test": {
-      "filePath": "test.tsx"
-    },
-    "/test-SSE": {
-      "filePath": "test-SSE.tsx"
-    },
-    "/teacher": {
-      "filePath": "teacher",
-      "children": [
-        "/teacher/_teacher"
-      ]
-    },
-    "/teacher/_teacher": {
-      "filePath": "teacher/_teacher.tsx",
-      "parent": "/teacher",
-      "children": [
-        "/teacher/_teacher/class",
-        "/teacher/_teacher/student",
-        "/teacher/_teacher/",
-        "/teacher/_teacher/tools/_teacher/tools"
-      ]
-    },
-    "/teacher/_teacher/class": {
-      "filePath": "teacher/_teacher.class.tsx",
-      "parent": "/teacher/_teacher"
-    },
-    "/teacher/_teacher/student": {
-      "filePath": "teacher/_teacher.student.tsx",
-      "parent": "/teacher/_teacher"
-    },
-    "/teacher/_teacher/": {
-      "filePath": "teacher/_teacher.index.tsx",
-      "parent": "/teacher/_teacher"
-    },
-    "/teacher/_teacher/tools/_teacher/tools": {
-      "filePath": "teacher/_teacher.tools/_teacher.tools.tsx",
-      "parent": "/teacher/_teacher",
-      "children": [
-        "/teacher/_teacher/tools/_teacher/tools/createLesson",
-        "/teacher/_teacher/tools/_teacher/tools/"
-      ]
-    },
-    "/teacher/_teacher/tools/_teacher/tools/createLesson": {
-      "filePath": "teacher/_teacher.tools/_teacher.tools.createLesson.tsx",
-      "parent": "/teacher/_teacher/tools/_teacher/tools"
-    },
-    "/teacher/_teacher/tools/_teacher/tools/": {
-      "filePath": "teacher/_teacher.tools/_teacher.tools.index.tsx",
-      "parent": "/teacher/_teacher/tools/_teacher/tools"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
